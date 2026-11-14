@@ -1,0 +1,6 @@
+{
+  "name": "Classifieds Messenger UX Redesign & Case Study",
+  "description": "Интерактивный прототип переработанного интерфейса чатов площадки объявлений и детальное UX-исследование с обоснованием продуктовых решений.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

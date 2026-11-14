@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  /* ==========================================================================
+     DESIGN SYSTEM TOKENS — CLASSIFIEDS MESSENGER UI
+     ========================================================================== */
+  /* 1. Brand & Semantic Accent Tokens */
+  --ds-brand-primary: #2563eb;
+  --ds-brand-primary-hover: #1d4ed8;
+  --ds-brand-primary-soft: #eff6ff;
+  --ds-brand-cta: #f97316;
+  --ds-brand-cta-hover: #ea580c;
+
+  /* 2. Neutral Surface & Canvas Tokens */
+  --ds-bg-canvas: #f4f5f7;
+  --ds-bg-surface: #ffffff;
+  --ds-bg-subtle: #f8fafc;
+  --ds-bg-muted: #f1f5f9;
+  --ds-bg-chat-stream: #f8fafc;
+
+  /* 3. Typography & Ink Tokens */
+  --ds-text-primary: #0f172a;
+  --ds-text-secondary: #475569;
+  --ds-text-muted: #64748b;
+  --ds-text-placeholder: #94a3b8;
+
+  /* 4. Border & Divider Tokens */
+  --ds-border-hairline: #e2e8f0;
+  --ds-border-strong: #cbd5e1;
+  --ds-border-focus: #2563eb;
+
+  /* 5. Message Bubble Tokens */
+  --ds-bubble-incoming-bg: #ffffff;
+  --ds-bubble-incoming-border: #e2e8f0;
+  --ds-bubble-outgoing-bg: #eef4ff;
+  --ds-bubble-outgoing-border: #bfdbfe;
+
+  /* 6. Status Tokens */
+  --ds-status-online: #16a34a;
+  --ds-status-warning: #d97706;
+  --ds-status-danger: #dc2626;
+
+  /* 7. Radius & Shadow Scale */
+  --ds-radius-sm: 6px;
+  --ds-radius-md: 10px;
+  --ds-radius-lg: 14px;
+  --ds-radius-xl: 18px;
+  --ds-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
+  --ds-shadow-menu: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+}
+
+@layer base {
+  body {
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--ds-bg-canvas);
+    color: var(--ds-text-primary);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Custom subtle scrollbars for desktop panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.45);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}
