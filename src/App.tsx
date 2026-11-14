@@ -68,7 +68,7 @@ interface ActiveMessageMenuState {
 }
 
 export default function App() {
-  // Global Marketplace Header State (Only RUB, USD, EUR)
+  // Global Marketplace Header State (Strictly RUB, USD, EUR)
   const [currency, setCurrency] = useState<CurrencyCode>('RUB');
   const [uiLang, setUiLang] = useState<'RU' | 'ES'>('RU');
   const [activeSidebarItem, setActiveSidebarItem] = useState<string>('messages');
@@ -222,7 +222,10 @@ export default function App() {
   }, [chats, chatFilter, selectedListingFilter, searchQuery]);
 
   const scrollToBottom = (behavior: ScrollBehavior = 'smooth') => {
-    messagesEndRef.current?.scrollIntoView({ behavior });
+    const el = messagesContainerRef.current;
+    if (el) {
+      el.scrollTo({ top: el.scrollHeight, behavior });
+    }
   };
 
   useEffect(() => {
@@ -517,12 +520,12 @@ export default function App() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-[var(--ds-canvas)] text-[var(--ds-ink-primary)]">
+    <div className="h-screen min-h-[580px] overflow-hidden flex flex-col bg-[var(--ds-canvas)] text-[var(--ds-ink-primary)]">
       {/* =====================================================================
-          1. TOP MARKETPLACE HEADER (Верхнее меню площадки объявлений)
+          1. TOP MARKETPLACE HEADER (Верхнее меню площадки объявлений — фикс. высота)
          ===================================================================== */}
-      <header className="bg-[var(--ds-surface)] border-b border-[var(--ds-border-base)] sticky top-0 z-30 shrink-0">
-        <div className="max-w-[1440px] mx-auto px-6 h-16 flex items-center justify-between gap-4">
+      <header className="bg-[var(--ds-surface)] border-b border-[var(--ds-border-base)] z-30 shrink-0">
+        <div className="max-w-[1440px] mx-auto px-6 h-13 flex items-center justify-between gap-4">
           {/* Left Navigation Cluster: Каталог объявлений + Вакансии */}
           <div className="flex items-center gap-5">
             <DSButton
@@ -660,7 +663,7 @@ export default function App() {
                         className="p-2 rounded-lg bg-[var(--ds-primary-soft)] hover:bg-blue-100/60 cursor-pointer"
                       >
                         <div className="font-semibold text-[var(--ds-ink-primary)]">
-                          Новое сообщение от Собеседник 2
+                          Новое сообщение от Алехандро Ривера
                         </div>
                         <div className="text-[var(--ds-ink-muted)] truncate">
                           «Когда можно посмотреть объект?»
@@ -674,7 +677,7 @@ export default function App() {
                         className="p-2 rounded-lg hover:bg-[var(--ds-surface-subtle)] cursor-pointer"
                       >
                         <div className="font-semibold text-[var(--ds-ink-primary)]">
-                          3 новых сообщения от Собеседник 5
+                          3 новых сообщения от Матео Фернандес
                         </div>
                         <div className="text-[var(--ds-ink-muted)] truncate">
                           «Удобно ли вам провести видеопоказ в четверг в 17:00?»
@@ -687,10 +690,10 @@ export default function App() {
 
               <button
                 onClick={() => setActiveSidebarItem('profile')}
-                className="w-9 h-9 rounded-full bg-slate-200 hover:bg-slate-300 text-[var(--ds-ink-secondary)] font-bold text-xs flex items-center justify-center transition-colors ml-1 cursor-pointer"
-                title="Профиль пользователя"
+                className="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 text-[var(--ds-ink-secondary)] font-bold text-xs flex items-center justify-center transition-colors ml-1 cursor-pointer"
+                title="Профиль: Павел Громов"
               >
-                П
+                ПГ
               </button>
             </div>
           </div>
@@ -698,179 +701,178 @@ export default function App() {
       </header>
 
       {/* =====================================================================
-          2. MAIN WORKSPACE: LEFT PROFILE SIDEBAR + "СООБЩЕНИЯ" (LIST + CHAT)
+          2. MAIN WORKSPACE: Занимает ровно всё доступное место между Header и Footer
+          (flex-1 min-h-0 overflow-hidden) с минимальным отступом py-2.5 (10px)
          ===================================================================== */}
-      <main className="flex-1 max-w-[1440px] w-full mx-auto px-6 pt-6 pb-8 flex gap-6 items-start">
+      <main className="flex-1 min-h-0 max-w-[1440px] w-full mx-auto px-6 py-2.5 flex gap-4 items-stretch overflow-hidden">
         {/* LEFT PROFILE SIDEBAR (Левый сайдбар личного кабинета) */}
-        <aside className="w-[248px] shrink-0 bg-[var(--ds-surface)] border border-[var(--ds-border-base)] rounded-[var(--ds-radius-lg)] p-4 shadow-[var(--ds-shadow-xs)] flex flex-col justify-between min-h-[680px]">
-          <div className="space-y-4">
-            {/* Profile Avatar & Title */}
-            <div className="pt-2 pb-3 flex flex-col items-center text-center border-b border-[var(--ds-border-subtle)]">
-              <div className="mb-2.5">
-                <DSAvatar code="П" size="lg" />
-              </div>
-              <h2 className="text-base font-bold text-[var(--ds-ink-primary)]">Профиль</h2>
-              <span className="text-[11px] text-[var(--ds-ink-subtle)] mt-0.5">
-                ID 492018 · Верифицирован
-              </span>
+        <aside className="w-[236px] shrink-0 h-full min-h-0 bg-[var(--ds-surface)] border border-[var(--ds-border-base)] rounded-[var(--ds-radius-lg)] p-3 shadow-[var(--ds-shadow-xs)] flex flex-col justify-between overflow-hidden">
+          {/* Profile Avatar & Title */}
+          <div className="pb-2.5 flex flex-col items-center text-center border-b border-[var(--ds-border-subtle)] shrink-0">
+            <div className="mb-1.5">
+              <DSAvatar code="ПГ" size="md" colorTone="blue" online />
             </div>
-
-            {/* Sidebar Navigation Menu */}
-            <nav className="space-y-0.5 text-xs">
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('profile');
-                  triggerToast('Раздел «Профиль»');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'profile'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <User className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Профиль</span>
-                </span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('my-ads');
-                  setChatFilter('selling');
-                  triggerToast('В списке чатов отфильтрованы диалоги по вашим объявлениям');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'my-ads'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <FolderOpen className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Мои объявления</span>
-                </span>
-                <DSBadge tone="neutral">99+</DSBadge>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('messages');
-                  setChatFilter('all');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'messages'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <MessageCircle className="w-4 h-4 text-[var(--ds-primary)]" />
-                  <span>Сообщения</span>
-                </span>
-                {totalUnreadMessagesSum > 0 && (
-                  <DSBadge tone="primary">{totalUnreadMessagesSum}</DSBadge>
-                )}
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('favorites');
-                  setChatFilter('buying');
-                  triggerToast('Показаны диалоги по интересующим вас объявлениям («Покупаю»)');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'favorites'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <Heart className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Избранное</span>
-                </span>
-                <DSBadge tone="neutral">{favoritesCount}</DSBadge>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('filters');
-                  triggerToast('Сохранённые поисковые фильтры');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'filters'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <SlidersHorizontal className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Мои фильтры</span>
-                </span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('reviews');
-                  triggerToast('Отзывы и рейтинг (4.9 ★)');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'reviews'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <Star className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Отзывы</span>
-                </span>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('notifications');
-                  setChatFilter('unread');
-                  triggerToast('Включён фильтр непрочитанных сообщений');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'notifications'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <Bell className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Уведомления</span>
-                </span>
-                <DSBadge tone="primary">{notificationsCount}</DSBadge>
-              </button>
-
-              <button
-                onClick={() => {
-                  setActiveSidebarItem('settings');
-                  triggerToast('Настройки аккаунта и автоперевода чатов');
-                }}
-                className={`w-full px-3 py-2.5 rounded-[var(--ds-radius-md)] flex items-center justify-between transition-colors cursor-pointer ${
-                  activeSidebarItem === 'settings'
-                    ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
-                    : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
-                }`}
-              >
-                <span className="flex items-center gap-3">
-                  <Settings className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
-                  <span>Настройки</span>
-                </span>
-              </button>
-            </nav>
+            <h2 className="text-xs font-bold text-[var(--ds-ink-primary)]">Павел Громов</h2>
+            <span className="text-[11px] text-[var(--ds-ink-subtle)]">
+              Профиль · Верифицирован
+            </span>
           </div>
 
+          {/* Sidebar Navigation Menu */}
+          <nav className="flex-1 min-h-0 overflow-y-auto ds-scroll py-1.5 space-y-0.5 text-xs">
+            <button
+              onClick={() => {
+                setActiveSidebarItem('profile');
+                triggerToast('Раздел «Профиль»');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'profile'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <User className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Профиль</span>
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('my-ads');
+                setChatFilter('selling');
+                triggerToast('В списке чатов отфильтрованы диалоги по вашим объявлениям');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'my-ads'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <FolderOpen className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Мои объявления</span>
+              </span>
+              <DSBadge tone="neutral">99+</DSBadge>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('messages');
+                setChatFilter('all');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'messages'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <MessageCircle className="w-4 h-4 text-[var(--ds-primary)]" />
+                <span>Сообщения</span>
+              </span>
+              {totalUnreadMessagesSum > 0 && (
+                <DSBadge tone="primary">{totalUnreadMessagesSum}</DSBadge>
+              )}
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('favorites');
+                setChatFilter('buying');
+                triggerToast('Показаны диалоги по интересующим вас объявлениям («Покупаю»)');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'favorites'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <Heart className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Избранное</span>
+              </span>
+              <DSBadge tone="neutral">{favoritesCount}</DSBadge>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('filters');
+                triggerToast('Сохранённые поисковые фильтры');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'filters'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <SlidersHorizontal className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Мои фильтры</span>
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('reviews');
+                triggerToast('Отзывы и рейтинг (4.9 ★)');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'reviews'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <Star className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Отзывы</span>
+              </span>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('notifications');
+                setChatFilter('unread');
+                triggerToast('Включён фильтр непрочитанных сообщений');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'notifications'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <Bell className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Уведомления</span>
+              </span>
+              <DSBadge tone="primary">{notificationsCount}</DSBadge>
+            </button>
+
+            <button
+              onClick={() => {
+                setActiveSidebarItem('settings');
+                triggerToast('Настройки аккаунта и автоперевода чатов');
+              }}
+              className={`w-full px-2.5 py-1.5 rounded-[var(--ds-radius-sm)] flex items-center justify-between transition-colors cursor-pointer ${
+                activeSidebarItem === 'settings'
+                  ? 'bg-[var(--ds-primary-soft)] text-[var(--ds-primary)] font-semibold'
+                  : 'text-[var(--ds-ink-secondary)] hover:bg-[var(--ds-surface-subtle)] font-medium'
+              }`}
+            >
+              <span className="flex items-center gap-2.5">
+                <Settings className="w-4 h-4 text-[var(--ds-ink-subtle)]" />
+                <span>Настройки</span>
+              </span>
+            </button>
+          </nav>
+
           {/* Logout Button at Bottom of Profile Card */}
-          <div className="pt-4 border-t border-[var(--ds-border-subtle)]">
+          <div className="pt-2 border-t border-[var(--ds-border-subtle)] shrink-0">
             <DSButton
               variant="soft"
-              size="md"
+              size="sm"
               className="w-full"
-              rightIcon={<LogOut className="w-4 h-4 text-[var(--ds-ink-muted)]" />}
+              rightIcon={<LogOut className="w-3.5 h-3.5 text-[var(--ds-ink-muted)]" />}
               onClick={() => triggerToast('Выход из аккаунта')}
             >
               Выйти из аккаунта
@@ -879,9 +881,9 @@ export default function App() {
         </aside>
 
         {/* RIGHT MAIN CONTENT AREA: "Сообщения" Title + Messenger Card */}
-        <div className="flex-1 min-w-0 flex flex-col">
-          <div className="flex items-center justify-between mb-3.5">
-            <h1 className="text-2xl font-bold text-[var(--ds-ink-primary)] tracking-tight">
+        <div className="flex-1 min-w-0 min-h-0 h-full flex flex-col overflow-hidden">
+          <div className="flex items-center justify-between mb-1.5 shrink-0">
+            <h1 className="text-lg font-bold text-[var(--ds-ink-primary)] tracking-tight leading-none">
               Сообщения
             </h1>
             <div className="flex items-center gap-3 text-xs text-[var(--ds-ink-muted)]">
@@ -893,14 +895,15 @@ export default function App() {
 
           {/* =================================================================
               MESSENGER UNIFIED WORKSPACE (Список чатов + Окно переписки)
+              grid-rows-1 + flex-1 min-h-0 гарантирует, что списки скроллятся внутри!
              ================================================================= */}
-          <div className="bg-[var(--ds-surface)] border border-[var(--ds-border-base)] rounded-[var(--ds-radius-lg)] shadow-[var(--ds-shadow-xs)] overflow-hidden grid grid-cols-12 h-[640px] relative">
+          <div className="flex-1 min-h-0 bg-[var(--ds-surface)] border border-[var(--ds-border-base)] rounded-[var(--ds-radius-lg)] shadow-[var(--ds-shadow-xs)] overflow-hidden grid grid-cols-12 grid-rows-1 relative">
             {/* ---------------------------------------------------------------
                 COLUMN A: SEPARATE CHAT LIST (Отдельный список чатов - 5 cols)
                --------------------------------------------------------------- */}
-            <section className="col-span-5 border-r border-[var(--ds-border-base)] flex flex-col h-full overflow-hidden bg-[var(--ds-surface)]">
+            <section className="col-span-5 border-r border-[var(--ds-border-base)] flex flex-col h-full min-h-0 overflow-hidden bg-[var(--ds-surface)]">
               {/* Search & Listing Filter Header */}
-              <div className="p-3.5 border-b border-[var(--ds-border-subtle)] space-y-2.5 shrink-0">
+              <div className="p-3 border-b border-[var(--ds-border-subtle)] space-y-2 shrink-0">
                 {/* Search Input */}
                 <div className="relative">
                   <Search className="w-4 h-4 text-[var(--ds-ink-subtle)] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -909,7 +912,7 @@ export default function App() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Найти собеседника или объявление"
-                    className="w-full pl-9 pr-8 py-2 bg-[var(--ds-surface-subtle)] border border-[var(--ds-border-base)] rounded-[var(--ds-radius-sm)] text-xs text-[var(--ds-ink-primary)] placeholder:text-[var(--ds-ink-subtle)] focus:outline-none focus:bg-white focus:border-[var(--ds-primary)] transition-colors"
+                    className="w-full pl-9 pr-8 py-1.5 bg-[var(--ds-surface-subtle)] border border-[var(--ds-border-base)] rounded-[var(--ds-radius-sm)] text-xs text-[var(--ds-ink-primary)] placeholder:text-[var(--ds-ink-subtle)] focus:outline-none focus:bg-white focus:border-[var(--ds-primary)] transition-colors"
                   />
                   {searchQuery && (
                     <button
@@ -923,6 +926,7 @@ export default function App() {
 
                 {/* Filter by Specific Listing Dropdown ("По объявлению") */}
                 <DSSelect
+                  compact
                   value={selectedListingFilter}
                   onChange={(e) => setSelectedListingFilter(e.target.value)}
                   aria-label="По объявлению"
@@ -936,11 +940,11 @@ export default function App() {
                   ))}
                 </DSSelect>
 
-                {/* Filter Tabs: Все | Непрочитанные | Покупаю | Мои объявления | Архив */}
-                <div className="flex items-center gap-1 border-b border-[var(--ds-border-subtle)] pt-0.5 -mx-3.5 px-3.5 overflow-x-auto">
+                {/* Filter Tabs: Все | Непрочитанные | Покупаю | Продаю | Архив */}
+                <div className="flex items-center justify-between gap-1 border-b border-[var(--ds-border-subtle)] pt-0.5 -mx-3 px-3">
                   <button
                     onClick={() => setChatFilter('all')}
-                    className={`pb-2 px-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`pb-1.5 px-1.5 text-[11px] font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       chatFilter === 'all'
                         ? 'border-[var(--ds-ink-primary)] text-[var(--ds-ink-primary)]'
                         : 'border-transparent text-[var(--ds-ink-muted)] hover:text-[var(--ds-ink-primary)]'
@@ -950,7 +954,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setChatFilter('unread')}
-                    className={`pb-2 px-2.5 text-xs font-semibold border-b-2 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`pb-1.5 px-1.5 text-[11px] font-semibold border-b-2 transition-colors flex items-center gap-1 whitespace-nowrap shrink-0 cursor-pointer ${
                       chatFilter === 'unread'
                         ? 'border-[var(--ds-ink-primary)] text-[var(--ds-ink-primary)]'
                         : 'border-transparent text-[var(--ds-ink-muted)] hover:text-[var(--ds-ink-primary)]'
@@ -963,7 +967,7 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setChatFilter('buying')}
-                    className={`pb-2 px-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`pb-1.5 px-1.5 text-[11px] font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       chatFilter === 'buying'
                         ? 'border-[var(--ds-ink-primary)] text-[var(--ds-ink-primary)]'
                         : 'border-transparent text-[var(--ds-ink-muted)] hover:text-[var(--ds-ink-primary)]'
@@ -973,17 +977,17 @@ export default function App() {
                   </button>
                   <button
                     onClick={() => setChatFilter('selling')}
-                    className={`pb-2 px-2.5 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`pb-1.5 px-1.5 text-[11px] font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       chatFilter === 'selling'
                         ? 'border-[var(--ds-ink-primary)] text-[var(--ds-ink-primary)]'
                         : 'border-transparent text-[var(--ds-ink-muted)] hover:text-[var(--ds-ink-primary)]'
                     }`}
                   >
-                    Мои объявления
+                    Продаю
                   </button>
                   <button
                     onClick={() => setChatFilter('archived')}
-                    className={`pb-2 px-2 text-xs font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                    className={`pb-1.5 px-1.5 text-[11px] font-semibold border-b-2 transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                       chatFilter === 'archived'
                         ? 'border-[var(--ds-ink-primary)] text-[var(--ds-ink-primary)]'
                         : 'border-transparent text-[var(--ds-ink-subtle)] hover:text-[var(--ds-ink-secondary)]'
@@ -994,8 +998,8 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Scrollable Chat List (15 items with visible .ds-scroll scrollbar!) */}
-              <div className="flex-1 overflow-y-auto ds-scroll divide-y divide-[var(--ds-border-subtle)]">
+              {/* Scrollable Chat List (15 items with realistic photos & names) */}
+              <div className="flex-1 min-h-0 overflow-y-auto ds-scroll divide-y divide-[var(--ds-border-subtle)]">
                 {filteredChats.length === 0 ? (
                   <div className="p-8 text-center space-y-2.5">
                     <p className="text-sm font-semibold text-[var(--ds-ink-secondary)]">
@@ -1036,7 +1040,7 @@ export default function App() {
                             y: Math.min(e.clientY, window.innerHeight - 310),
                           });
                         }}
-                        className={`group relative px-3.5 py-3 transition-colors cursor-pointer select-none ${
+                        className={`group relative px-3.5 py-2.5 transition-colors cursor-pointer select-none ${
                           isSelected
                             ? 'bg-[var(--ds-surface-selected)] hover:bg-blue-100/60'
                             : hasUnread
@@ -1045,10 +1049,13 @@ export default function App() {
                         }`}
                       >
                         <div className="flex items-start gap-3">
-                          {/* Avatar Circle (С1, С2, С3...) + Online indicator */}
+                          {/* Realistic User Photo or Colored Initials Avatar + Online indicator */}
                           <div className="mt-0.5">
                             <DSAvatar
                               code={chat.interlocutorCode}
+                              avatarUrl={chat.avatarUrl}
+                              alt={chat.interlocutorName}
+                              colorTone={chat.avatarColor}
                               size="md"
                               online={chat.interlocutorOnline}
                               selected={isSelected}
@@ -1057,7 +1064,7 @@ export default function App() {
 
                           {/* Center Info Block */}
                           <div className="flex-1 min-w-0 space-y-0.5">
-                            {/* Line 1: Interlocutor Name + Pin/Mute + Date */}
+                            {/* Line 1: Realistic Interlocutor Name + Subtitle + Pin/Mute + Date */}
                             <div className="flex items-center justify-between gap-2">
                               <div className="flex items-center gap-1.5 min-w-0">
                                 <span
@@ -1176,12 +1183,15 @@ export default function App() {
             {/* ---------------------------------------------------------------
                 COLUMN B: CONVERSATION WINDOW (Окно переписки - 7 cols)
                --------------------------------------------------------------- */}
-            <section className="col-span-7 flex flex-col h-full overflow-hidden bg-[var(--ds-surface-subtle)] relative">
+            <section className="col-span-7 flex flex-col h-full min-h-0 overflow-hidden bg-[var(--ds-surface-subtle)] relative">
               {/* 1. Top Interlocutor Header */}
-              <div className="px-5 py-3 bg-[var(--ds-surface)] border-b border-[var(--ds-border-base)] flex items-center justify-between gap-4 shrink-0">
+              <div className="px-4 py-2 bg-[var(--ds-surface)] border-b border-[var(--ds-border-base)] flex items-center justify-between gap-4 shrink-0">
                 <div className="flex items-center gap-3 min-w-0">
                   <DSAvatar
                     code={activeChat.interlocutorCode}
+                    avatarUrl={activeChat.avatarUrl}
+                    alt={activeChat.interlocutorName}
+                    colorTone={activeChat.avatarColor}
                     size="sm"
                     online={activeChat.interlocutorOnline}
                   />
@@ -1191,7 +1201,7 @@ export default function App() {
                         {activeChat.interlocutorName}
                       </h2>
                       <span className="text-xs text-[var(--ds-ink-muted)] truncate">
-                        ({activeChat.interlocutorSubtitle})
+                        · {activeChat.interlocutorSubtitle}
                       </span>
                       <span className="text-xs text-amber-600 font-mono tabular-nums shrink-0">
                         ★ {activeChat.interlocutorRating}
@@ -1296,7 +1306,7 @@ export default function App() {
               )}
 
               {/* 2. Pinned Listing Context Bar (Складское помещение 600 м² · 450 000 ₽) */}
-              <div className="px-5 py-2.5 bg-[var(--ds-surface)] border-b border-[var(--ds-border-base)] flex flex-col gap-1.5 shrink-0">
+              <div className="px-5 py-2 bg-[var(--ds-surface)] border-b border-[var(--ds-border-base)] flex flex-col gap-1.5 shrink-0">
                 <div className="flex items-center justify-between gap-3">
                   <div className="flex items-center gap-3 min-w-0">
                     <ListingThumbnail
@@ -1353,7 +1363,7 @@ export default function App() {
 
                 {/* Pinned Message Banner (if any) */}
                 {pinnedMessage && (
-                  <div className="pt-1.5 border-t border-[var(--ds-border-subtle)] flex items-center justify-between gap-2 text-[11px] text-[var(--ds-ink-secondary)]">
+                  <div className="pt-1 border-t border-[var(--ds-border-subtle)] flex items-center justify-between gap-2 text-[11px] text-[var(--ds-ink-secondary)]">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <Pin className="w-3 h-3 text-[var(--ds-primary)] shrink-0 rotate-45" />
                       <span className="font-semibold text-[var(--ds-primary)] shrink-0">
@@ -1371,10 +1381,10 @@ export default function App() {
                 )}
               </div>
 
-              {/* 3. Scrollable Messages Stream (18+ messages with visible .ds-scroll scrollbar and date dividers!) */}
+              {/* 3. Scrollable Messages Stream (17+ messages with visible .ds-scroll scrollbar and date dividers!) */}
               <div
                 ref={messagesContainerRef}
-                className="flex-1 overflow-y-auto ds-scroll px-5 py-4 space-y-3 relative"
+                className="flex-1 min-h-0 overflow-y-auto ds-scroll px-5 py-3 space-y-2 relative"
               >
                 {visibleMessages.map((msg, index) => {
                   const isMe = msg.sender === 'me';
@@ -1388,7 +1398,7 @@ export default function App() {
                     <React.Fragment key={msg.id}>
                       {/* Chronological Date Divider */}
                       {showDateDivider && (
-                        <div className="flex items-center justify-center py-2">
+                        <div className="flex items-center justify-center py-1.5">
                           <span className="px-3 py-0.5 rounded-full bg-slate-200/75 text-[11px] font-medium text-[var(--ds-ink-secondary)]">
                             {msg.dateGroup}
                           </span>
@@ -1397,7 +1407,7 @@ export default function App() {
 
                       {/* Unread Messages Divider */}
                       {showUnreadDivider && (
-                        <div className="flex items-center gap-3 my-3">
+                        <div className="flex items-center gap-3 my-2.5">
                           <div className="h-px bg-blue-300 flex-1" />
                           <div className="flex items-center gap-2 px-3 py-0.5 rounded-full bg-[var(--ds-primary-soft)] border border-[var(--ds-primary-border)] text-[11px] font-semibold text-[var(--ds-primary)]">
                             <span>Непрочитанные сообщения</span>
@@ -1772,15 +1782,15 @@ export default function App() {
       </main>
 
       {/* =====================================================================
-          3. SITE FOOTER & FLOATING HELP BUTTON (Футер площадки и кнопка Помощь)
+          3. SITE FOOTER & FLOATING HELP BUTTON (Компактный футер фиксированной высоты)
          ===================================================================== */}
-      <footer className="bg-[var(--ds-surface)] border-t border-[var(--ds-border-base)] mt-auto py-8 px-6 shrink-0 relative">
-        <div className="max-w-[1440px] mx-auto grid grid-cols-2 sm:grid-cols-4 gap-8 text-xs pl-0 lg:pl-[272px]">
-          <div className="space-y-2">
+      <footer className="bg-[var(--ds-surface)] border-t border-[var(--ds-border-base)] py-2 px-6 shrink-0 relative">
+        <div className="max-w-[1440px] mx-auto grid grid-cols-2 sm:grid-cols-4 gap-6 text-[11px] leading-snug pl-0 lg:pl-[252px]">
+          <div className="space-y-0.5">
             <h3 className="font-bold text-[var(--ds-ink-primary)] tracking-wide text-[11px]">
               О платформе
             </h3>
-            <ul className="space-y-1.5 text-[var(--ds-ink-muted)]">
+            <ul className="space-y-0.5 text-[var(--ds-ink-muted)]">
               <li>
                 <a
                   href="#about"
@@ -1808,11 +1818,11 @@ export default function App() {
             </ul>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-0.5">
             <h3 className="font-bold text-[var(--ds-ink-primary)] tracking-wide text-[11px]">
               Помощь
             </h3>
-            <ul className="space-y-1.5 text-[var(--ds-ink-muted)]">
+            <ul className="space-y-0.5 text-[var(--ds-ink-muted)]">
               <li>
                 <a
                   href="#help"
@@ -1840,11 +1850,11 @@ export default function App() {
             </ul>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-0.5">
             <h3 className="font-bold text-[var(--ds-ink-primary)] tracking-wide text-[11px]">
               Для бизнеса
             </h3>
-            <ul className="space-y-1.5 text-[var(--ds-ink-muted)]">
+            <ul className="space-y-0.5 text-[var(--ds-ink-muted)]">
               <li>
                 <a
                   href="#biz"
@@ -1872,11 +1882,11 @@ export default function App() {
             </ul>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-0.5">
             <h3 className="font-bold text-[var(--ds-ink-primary)] tracking-wide text-[11px]">
               Соцсети
             </h3>
-            <ul className="space-y-1.5 text-[var(--ds-ink-muted)]">
+            <ul className="space-y-0.5 text-[var(--ds-ink-muted)]">
               <li>
                 <a
                   href="#community"
@@ -1896,10 +1906,10 @@ export default function App() {
         {/* Floating "Помощь" Circle Button */}
         <button
           onClick={() => triggerToast('Онлайн-консультант службы поддержки на связи 24/7')}
-          className="fixed bottom-6 right-6 z-40 w-13 h-13 rounded-full bg-[#1d71b8] hover:bg-[#155d9a] text-white shadow-lg flex flex-col items-center justify-center gap-0.5 transition-transform hover:scale-105 cursor-pointer"
+          className="fixed bottom-3 right-5 z-40 w-11 h-11 rounded-full bg-[#1d71b8] hover:bg-[#155d9a] text-white shadow-lg flex flex-col items-center justify-center gap-0.5 transition-transform hover:scale-105 cursor-pointer"
           title="Помощь и поддержка"
         >
-          <MessageCircle className="w-5 h-5" />
+          <MessageCircle className="w-4 h-4" />
           <span className="text-[9px] font-semibold leading-none">Помощь</span>
         </button>
       </footer>

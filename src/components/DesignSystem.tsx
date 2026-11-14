@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 
 /* ============================================================================
@@ -120,6 +120,9 @@ export const DSBadge: React.FC<DSBadgeProps> = ({
 
 export interface DSAvatarProps {
   code: string;
+  avatarUrl?: string;
+  alt?: string;
+  colorTone?: 'slate' | 'blue' | 'emerald' | 'amber' | 'violet' | 'rose';
   size?: 'sm' | 'md' | 'lg';
   online?: boolean;
   selected?: boolean;
@@ -127,27 +130,51 @@ export interface DSAvatarProps {
 
 export const DSAvatar: React.FC<DSAvatarProps> = ({
   code,
+  avatarUrl,
+  alt = 'Аватар пользователя',
+  colorTone = 'slate',
   size = 'md',
   online = false,
   selected = false,
 }) => {
+  const [imgError, setImgError] = useState(false);
+
   const sizeMap = {
     sm: 'w-9 h-9 text-xs',
     md: 'w-10 h-10 text-xs',
     lg: 'w-16 h-16 text-lg',
   }[size];
 
+  const toneMap = {
+    slate: 'bg-slate-200/90 text-slate-700',
+    blue: 'bg-blue-100 text-blue-800',
+    emerald: 'bg-emerald-100 text-emerald-800',
+    amber: 'bg-amber-100 text-amber-800',
+    violet: 'bg-violet-100 text-violet-800',
+    rose: 'bg-rose-100 text-rose-800',
+  }[colorTone];
+
   return (
     <div className="relative shrink-0 select-none">
-      <div
-        className={`rounded-full font-bold flex items-center justify-center transition-colors ${sizeMap} ${
-          selected
-            ? 'bg-[var(--ds-primary)] text-white'
-            : 'bg-slate-200/90 text-[var(--ds-ink-secondary)]'
-        }`}
-      >
-        {code}
-      </div>
+      {avatarUrl && !imgError ? (
+        <img
+          src={avatarUrl}
+          alt={alt}
+          referrerPolicy="no-referrer"
+          onError={() => setImgError(true)}
+          className={`rounded-full object-cover transition-all ${sizeMap} ${
+            selected ? 'ring-2 ring-[var(--ds-primary)] ring-offset-1' : 'border border-slate-200/80'
+          }`}
+        />
+      ) : (
+        <div
+          className={`rounded-full font-bold flex items-center justify-center transition-colors ${sizeMap} ${
+            selected ? 'bg-[var(--ds-primary)] text-white' : toneMap
+          }`}
+        >
+          {code}
+        </div>
+      )}
       {online && (
         <span
           className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-[var(--ds-success)] ring-2 ring-white"
