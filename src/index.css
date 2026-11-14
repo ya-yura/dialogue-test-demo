@@ -2,58 +2,68 @@
 
 :root {
   /* ==========================================================================
-     DESIGN SYSTEM TOKENS — CLASSIFIEDS MESSENGER UI
+     UNIFIED DESIGN SYSTEM TOKENS (v2.0) — CLASSIFIEDS PLATFORM & MESSENGER
      ========================================================================== */
-  /* 1. Brand & Semantic Accent Tokens */
-  --ds-brand-primary: #2563eb;
-  --ds-brand-primary-hover: #1d4ed8;
-  --ds-brand-primary-soft: #eff6ff;
-  --ds-brand-cta: #f97316;
-  --ds-brand-cta-hover: #ea580c;
+  /* 1. Brand & Interactive Accent Tokens */
+  --ds-primary: #2563eb;
+  --ds-primary-hover: #1d4ed8;
+  --ds-primary-active: #1e40af;
+  --ds-primary-soft: #eff6ff;
+  --ds-primary-border: #bfdbfe;
 
-  /* 2. Neutral Surface & Canvas Tokens */
-  --ds-bg-canvas: #f4f5f7;
-  --ds-bg-surface: #ffffff;
-  --ds-bg-subtle: #f8fafc;
-  --ds-bg-muted: #f1f5f9;
-  --ds-bg-chat-stream: #f8fafc;
+  --ds-cta: #f97316;
+  --ds-cta-hover: #ea580c;
+  --ds-cta-soft: #fff7ed;
 
-  /* 3. Typography & Ink Tokens */
-  --ds-text-primary: #0f172a;
-  --ds-text-secondary: #475569;
-  --ds-text-muted: #64748b;
-  --ds-text-placeholder: #94a3b8;
+  /* 2. Surface & Canvas Hierarchy */
+  --ds-canvas: #f4f5f7;
+  --ds-surface: #ffffff;
+  --ds-surface-subtle: #f8fafc;
+  --ds-surface-muted: #f1f5f9;
+  --ds-surface-hover: #f8fafc;
+  --ds-surface-selected: #eff6ff;
 
-  /* 4. Border & Divider Tokens */
-  --ds-border-hairline: #e2e8f0;
+  /* 3. Message Bubbles */
+  --ds-bubble-in-bg: #ffffff;
+  --ds-bubble-in-border: #e2e8f0;
+  --ds-bubble-out-bg: #eef4ff;
+  --ds-bubble-out-border: #bfdbfe;
+
+  /* 4. Typography & Ink Hierarchy */
+  --ds-ink-primary: #0f172a;
+  --ds-ink-secondary: #334155;
+  --ds-ink-muted: #64748b;
+  --ds-ink-subtle: #94a3b8;
+
+  /* 5. Borders & Hairlines */
+  --ds-border-subtle: #f1f5f9;
+  --ds-border-base: #e2e8f0;
   --ds-border-strong: #cbd5e1;
-  --ds-border-focus: #2563eb;
 
-  /* 5. Message Bubble Tokens */
-  --ds-bubble-incoming-bg: #ffffff;
-  --ds-bubble-incoming-border: #e2e8f0;
-  --ds-bubble-outgoing-bg: #eef4ff;
-  --ds-bubble-outgoing-border: #bfdbfe;
+  /* 6. Semantic Status Tokens */
+  --ds-success: #16a34a;
+  --ds-warning: #d97706;
+  --ds-danger: #dc2626;
+  --ds-danger-soft: #fef2f2;
 
-  /* 6. Status Tokens */
-  --ds-status-online: #16a34a;
-  --ds-status-warning: #d97706;
-  --ds-status-danger: #dc2626;
+  /* 7. Spatial & Radius Scale */
+  --ds-radius-xs: 6px;
+  --ds-radius-sm: 8px;
+  --ds-radius-md: 12px;
+  --ds-radius-lg: 16px;
+  --ds-radius-full: 9999px;
 
-  /* 7. Radius & Shadow Scale */
-  --ds-radius-sm: 6px;
-  --ds-radius-md: 10px;
-  --ds-radius-lg: 14px;
-  --ds-radius-xl: 18px;
-  --ds-shadow-card: 0 1px 3px rgba(15, 23, 42, 0.04), 0 1px 2px rgba(15, 23, 42, 0.02);
-  --ds-shadow-menu: 0 10px 25px -5px rgba(15, 23, 42, 0.12), 0 8px 10px -6px rgba(15, 23, 42, 0.08);
+  /* 8. Elevation Tokens */
+  --ds-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --ds-shadow-sm: 0 2px 6px -1px rgba(15, 23, 42, 0.06), 0 1px 2px -1px rgba(15, 23, 42, 0.04);
+  --ds-shadow-floating: 0 12px 28px -6px rgba(15, 23, 42, 0.14), 0 4px 10px -3px rgba(15, 23, 42, 0.07);
 }
 
 @layer base {
   body {
     font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--ds-bg-canvas);
-    color: var(--ds-text-primary);
+    background-color: var(--ds-canvas);
+    color: var(--ds-ink-primary);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 
@@ -67,21 +77,28 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Custom subtle scrollbars for desktop panels */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+/* Visible, tactile scrollbars for chat list and message stream */
+.ds-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 #f8fafc;
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.ds-scroll::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.45);
+.ds-scroll::-webkit-scrollbar-track {
+  background: #f8fafc;
+  border-left: 1px solid #f1f5f9;
+}
+
+.ds-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
   border-radius: 9999px;
+  border: 1px solid #f8fafc;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(100, 116, 139, 0.7);
+.ds-scroll::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
 }
